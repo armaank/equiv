@@ -4,11 +4,7 @@ from typing import List, Tuple
 
 import jax
 import jax.numpy as jnp
-import numpy as np
 from loguru import logger
-
-
-from utils import set_seed
 
 
 def generate_toy_data(

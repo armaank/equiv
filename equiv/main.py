@@ -1,11 +1,7 @@
-import os
-
 import jax
 import matplotlib.pyplot as plt
-from loguru import logger
-
-
 from data import generate_toy_data
+from loguru import logger
 from utils import set_seed
 
 
