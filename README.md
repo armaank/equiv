@@ -14,8 +14,11 @@ Based on talk from Dr. Andrew Gordon Wilson from June 2025 at LoG NYC meetup.
 translation parameter sharing but not a hard restriction
 
 
-### Papers
+### Papers & References
 
 https://arxiv.org/pdf/2503.02113
 
 https://arxiv.org/pdf/2304.05366 
+
+Very interesting blog post on an exchange between Randford Neal, Andrew Gelman and David MacKay on this topic: https://statmodeling.stat.columbia.edu/2011/12/04/david-mackay-and-occams-razor/
+
