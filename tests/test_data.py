@@ -11,6 +11,9 @@ jax.config.update("jax_enable_x64", True)
     [
         ("simple", 6),
         ("structured", 12),
+        ("2nd order polynomial", 12),
+        ("cosine", 12),
+        ("10th order polynomial", 12),
         ("noise", 12),
     ],
 )
@@ -20,7 +23,10 @@ def test_output_shapes(data_type, n):
     assert y.shape == (n,)
 
 
-@pytest.mark.parametrize("data_type", ["simple", "structured"])
+@pytest.mark.parametrize(
+    "data_type",
+    ["simple", "structured", "2nd order polynomial", "cosine", "10th order polynomial"],
+)
 def test_x_is_sorted(data_type):
     x, _ = generate_toy_data(data_type, 20, [0.0, 1.0], seed=0)
     assert jnp.all(x[1:] >= x[:-1])
@@ -34,5 +40,5 @@ def test_x_within_bounds():
 
 
 def test_invalid_data_type_raises():
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         generate_toy_data("bad", 5, [0.0, 1.0], seed=0)
