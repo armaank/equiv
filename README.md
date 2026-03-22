@@ -46,6 +46,22 @@ Defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Runs on push 
 - `lint`: ruff check, ruff format, isort
 - `test`: pytest with coverage, uploads to codecov
 
+## Results
+
+### Order-Dependent Regularization (Figure 1)
+
+![ODR figure](figures/odr_sample.png)
+
+Pretty closely replicates the figures from the talk. Looks like the un-regularized model isn't so bad
+when it isn't at the extremas.
+
+### Sample Size Experiment (Figure 2)
+
+![Sample size figure](figures/sample_size.png)
+
+Again, pretty close to the figures from the talk. The magnitude of the RMSE isn't as low, but the
+relative trends for the different models hold up. 
+
 ## Papers & References
 
 https://arxiv.org/pdf/2503.02113
