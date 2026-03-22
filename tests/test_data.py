@@ -40,5 +40,5 @@ def test_x_within_bounds():
 
 
 def test_invalid_data_type_raises():
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         generate_toy_data("bad", 5, [0.0, 1.0], seed=0)

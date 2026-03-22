@@ -3,7 +3,9 @@
 import jax.numpy as jnp
 
 
-def _scale_x(x: jnp.ndarray) -> tuple[jnp.ndarray, float, float]:
+def _scale_x(
+    x: jnp.ndarray, x_min: float | None = None, x_max: float | None = None
+) -> tuple[jnp.ndarray, float, float]:
     """Scale x to [-1, 1] using min-max normalization.
 
     Parameters
@@ -20,8 +22,10 @@ def _scale_x(x: jnp.ndarray) -> tuple[jnp.ndarray, float, float]:
     x_max : float
         Observed maximum of x.
     """
-    x_min = float(jnp.min(x))
-    x_max = float(jnp.max(x))
+    if x_min is None:
+        x_min = float(jnp.min(x))
+    if x_max is None:
+        x_max = float(jnp.max(x))
     x_scaled = 2.0 * (x - x_min) / (x_max - x_min + 1e-12) - 1.0
     return x_scaled, x_min, x_max
 
@@ -64,7 +68,6 @@ def fit_polynomial(
 
     # create polynomial feature matrix
     X = jnp.stack([x_scaled**j for j in range(degree + 1)], axis=1)
-    X = X.reshape(-1, degree + 1)
     # create regularization matrix
 
     if odr == "exp_odr":
@@ -82,7 +85,7 @@ def fit_polynomial(
             jnp.matmul(X.T, X) + alpha * jnp.diag(penalties), jnp.matmul(X.T, y)
         )
     else:
-        # solve for coefficients without order-dependent regularization
+        # TODO: consider using lstsq, handles rank-deficient cases (degree >= n_samples) without NaN
         coeffs = jnp.linalg.solve(jnp.matmul(X.T, X), jnp.matmul(X.T, y))
 
     return coeffs, x_min, x_max
@@ -109,6 +112,6 @@ def predict_polynomial(
     jnp.ndarray, shape (m,)
         Predicted values.
     """
-    x_scaled = 2.0 * (x - x_min) / (x_max - x_min + 1e-12) - 1.0
+    x_scaled, _, _ = _scale_x(x, x_min, x_max)
     X = jnp.stack([x_scaled**j for j in range(len(coeffs))], axis=1)
     return jnp.matmul(X, coeffs)

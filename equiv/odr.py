@@ -3,14 +3,11 @@
 Order-dependent regularization experiment.
 """
 
-import jax
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
 from data import generate_toy_data
 from loguru import logger
 from ml import fit_polynomial, predict_polynomial
-
-jax.config.update("jax_enable_x64", True)
 
 
 def make_odr_figure() -> None:

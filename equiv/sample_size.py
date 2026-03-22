@@ -6,13 +6,12 @@ sample size experiments
 import jax
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from data import generate_toy_data
 from loguru import logger
 from ml import fit_polynomial, predict_polynomial
 from utils import set_seed
-
-jax.config.update("jax_enable_x64", True)
 
 
 def _eval_rmse(
@@ -34,6 +33,7 @@ def run_sample_size_experiment(
     n_trials: int = 100,
     noise_sigma: float = 0.1,
     seed: int = 0,
+    bounds: list[float] = [0.0, 1.0],
 ) -> pd.DataFrame:
     """Run a sample size experiment comparing degree-2, degree-10, and regularized degree-10 polynomials.
 
@@ -47,13 +47,15 @@ def run_sample_size_experiment(
     sample_sizes : list of int
         Training set sizes to evaluate.
     alpha : float
-        Regularization strength for the degree-10 soft-ODR model.
+        Regularization strength for the degree-10 quadratic ODR model.
     n_trials : int
         Number of independent trials per sample size.
     noise_sigma : float
         Standard deviation of Gaussian noise added to training targets.
     seed : int
         Base random seed for reproducibility.
+    bounds : list of float
+        [low, high] range for uniform x samples, applied to both train and test.
 
     Returns
     -------
@@ -64,13 +66,13 @@ def run_sample_size_experiment(
         One row per entry in ``sample_sizes``.
     """
     key = set_seed(seed)
-    x_test, y_test = generate_toy_data(data_type, 400, [0.0, 1.0], seed=seed + 9999)
+    x_test, y_test = generate_toy_data(data_type, 100, bounds, seed=seed + 9999)
 
     records = []
     for i, n in enumerate(sample_sizes):
         for trial in range(n_trials):
             x_train, y_noiseless = generate_toy_data(
-                data_type, n, [0.0, 1.0], seed=seed + i * n_trials + trial
+                data_type, n, bounds, seed=seed + i * n_trials + trial
             )
             key, noise_key = jax.random.split(key)
             y_train = y_noiseless + noise_sigma * jax.random.normal(noise_key, (n,))
@@ -140,7 +142,11 @@ def make_sample_size_figure() -> None:
             std = results[f"{model}_std"]
             ax.semilogy(results["n"], mean, color=color, linewidth=2, label=label)
             ax.fill_between(
-                results["n"], mean - std, mean + std, color=color, alpha=0.2
+                results["n"],
+                np.maximum(mean - std, 1e-3),  # sets lower limit on displayed bounds
+                mean + std,
+                color=color,
+                alpha=0.2,
             )
         ax.set_title(title)
         ax.set_xlabel("# Training Samples")
