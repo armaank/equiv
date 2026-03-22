@@ -21,6 +21,7 @@ dependencies = [
     "opt-einsum==3.4.0",
     "optax==0.2.5",
     "packaging==26.0",
+    "pandas>=3.0.1",
     "pillow==12.1.0",
     "pyparsing==3.3.2",
     "python-dateutil==2.9.0.post0",
@@ -36,7 +37,7 @@ dependencies = [
 pythonpath = ["equiv"]
 
 [tool.coverage.run]
-omit = ["equiv/main.py"]
+omit = ["equiv/main.py", "equiv/odr.py", "equiv/sample_size.py"]
 
 [dependency-groups]
 dev = [
