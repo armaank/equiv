@@ -23,10 +23,17 @@ def test_fit_polynomial_coeff_shape():
     assert coeffs.shape == (4,)
 
 
-def test_fit_polynomial_odr_coeff_shape():
+def test_fit_polynomial_exp_odr_coeff_shape():
     x = jnp.linspace(0.0, 1.0, 20)
     y = jnp.sin(x)
-    coeffs, _, _ = fit_polynomial(x, y, degree=5, alpha=1e-3, odr=True)
+    coeffs, _, _ = fit_polynomial(x, y, degree=5, alpha=1e-3, odr="exp_odr")
+    assert coeffs.shape == (6,)
+
+
+def test_fit_polynomial_quad_odr_coeff_shape():
+    x = jnp.linspace(0.0, 1.0, 20)
+    y = jnp.sin(x)
+    coeffs, _, _ = fit_polynomial(x, y, degree=5, alpha=1e-3, odr="quad_odr")
     assert coeffs.shape == (6,)
 
 

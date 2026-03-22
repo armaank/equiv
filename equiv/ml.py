@@ -27,7 +27,11 @@ def _scale_x(x: jnp.ndarray) -> tuple[jnp.ndarray, float, float]:
 
 
 def fit_polynomial(
-    x: jnp.ndarray, y: jnp.ndarray, degree: int, alpha: float | None, odr: bool = False
+    x: jnp.ndarray,
+    y: jnp.ndarray,
+    degree: int,
+    alpha: float | None,
+    odr: str | bool = False,
 ):
     """Fit a polynomial by closed-form least squares with optional ODR.
 
@@ -40,9 +44,11 @@ def fit_polynomial(
     degree : int
         Polynomial degree.
     alpha : float or None
-        Regularization strength.
-    odr : bool
-        If True, apply order-dependent regularization with penalty 2^j for degree j.
+        Regularization strength. Required when odr is not False.
+    odr : {"exp_odr", "quad_odr", False}
+        ``"exp_odr"``  – exponential penalty 2^j per degree j (aggressive).
+        ``"quad_odr"`` – quadratic penalty j² per degree j (gentle).
+        ``False``      – no order-dependent regularization.
 
     Returns
     -------
@@ -61,11 +67,17 @@ def fit_polynomial(
     X = X.reshape(-1, degree + 1)
     # create regularization matrix
 
-    if odr:
-        # if odr, scale penalties by by degree (e.g. exponentially increasing)
+    if odr == "exp_odr":
+        # scale penalties by exponentially increasing degree (2**j)
         penalties = 2.0 ** jnp.arange(degree + 1, dtype=float)
         penalties = penalties.at[0].set(0.0)  # do not regularize intercept term
-        # solve for coefficients with regularization
+        coeffs = jnp.linalg.solve(
+            jnp.matmul(X.T, X) + alpha * jnp.diag(penalties), jnp.matmul(X.T, y)
+        )
+    elif odr == "quad_odr":
+        # scale by quadratic penalty (j**2)
+        penalties = jnp.arange(degree + 1, dtype=float) ** 2
+        penalties = penalties.at[0].set(0.0)
         coeffs = jnp.linalg.solve(
             jnp.matmul(X.T, X) + alpha * jnp.diag(penalties), jnp.matmul(X.T, y)
         )
