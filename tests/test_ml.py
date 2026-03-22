@@ -1,11 +1,10 @@
 import jax
-
-jax.config.update("jax_enable_x64", True)
-
 import jax.numpy as jnp
 import numpy as np
 import pytest
 from ml import _scale_x, fit_polynomial, predict_polynomial
+
+jax.config.update("jax_enable_x64", True)
 
 
 def test_scale_x_range():

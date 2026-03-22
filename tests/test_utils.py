@@ -1,10 +1,9 @@
 import jax
-
-jax.config.update("jax_enable_x64", True)
-
 import jax.numpy as jnp
 import numpy as np
 from utils import set_seed
+
+jax.config.update("jax_enable_x64", True)
 
 
 def test_set_seed_returns_jax_key():
