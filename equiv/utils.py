@@ -7,7 +7,18 @@ import numpy as np
 
 
 def set_seed(seed: int) -> jax.random.PRNGKey:
-    """set random seed for reproducibility"""
+    """Set random seeds for Python, numpy, and JAX for reproducibility.
+
+    Parameters
+    ----------
+    seed : int
+        Integer seed value.
+
+    Returns
+    -------
+    jax.random.PRNGKey
+        JAX PRNG key initialized with `seed`.
+    """
 
     random.seed(seed)
     np.random.seed(seed)

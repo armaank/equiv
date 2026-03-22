@@ -32,8 +32,16 @@ dependencies = [
     "typing-extensions==4.15.0",
 ]
 
+[tool.pytest.ini_options]
+pythonpath = ["equiv"]
+
+[tool.coverage.run]
+omit = ["equiv/main.py"]
+
 [dependency-groups]
 dev = [
     "isort>=7.0.0",
+    "pytest>=9.0.2",
+    "pytest-cov>=6.0.0",
     "ruff>=0.14.14",
 ]
