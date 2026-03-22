@@ -27,22 +27,26 @@ uv run equiv/main.py
 
 ```
 
-## Testing
+## Development
 
+Run tests
 ```bash
-uv run pytest tests/ -v
+make tests
 ```
 
-## CI
+Lint and format code 
+```bash
+make lint
+```
 
-Defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Runs on every push to `main` and on pull requests.
+### CI
 
-| Job | What it does |
-|-----|-------------|
-| `lint` | `ruff check`, `ruff format --check`, `isort --check-only` |
-| `test` | `pytest` with coverage, uploads report to [codecov](https://codecov.io/gh/armaank/equiv) |
+Defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml). Runs on push to `main` and on pull requests.
 
-### Papers & References
+- `lint`: ruff check, ruff format, isort
+- `test`: pytest with coverage, uploads to codecov
+
+## Papers & References
 
 https://arxiv.org/pdf/2503.02113
 
